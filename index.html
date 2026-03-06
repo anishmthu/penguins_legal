@@ -1,17 +1,499 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Penguins Legal</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Penguins — Stay Cool. Stay Consistent.</title>
+<meta name="description" content="Build discipline with your penguin companion. Track habits, gym, budget & bad habits. Evolve from Egg to Emperor.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0D1117;
+  --bg2: #111922;
+  --card: #161B22;
+  --border: #21262D;
+  --accent: #4ECDC4;
+  --accent2: #44B8A8;
+  --accent-soft: rgba(78,205,196,0.08);
+  --purple: #B387FA;
+  --warning: #FFB74D;
+  --danger: #FF6B6B;
+  --success: #66BB6A;
+  --text: #E6EDF3;
+  --muted: #8B949E;
+  --dim: #484F58;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif; overflow-x:hidden; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:var(--dim); border-radius:3px; }
+
+/* Noise overlay */
+body::before {
+  content:''; position:fixed; top:0; left:0; width:100%; height:100%;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:9999;
+}
+
+/* NAV */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  backdrop-filter:blur(20px); background:rgba(13,17,23,0.85);
+  border-bottom:1px solid var(--border);
+  padding:0 40px; height:64px; display:flex; align-items:center; justify-content:space-between;
+}
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+.nav-logo span { font-size:20px; font-weight:800; color:var(--accent); letter-spacing:-0.5px; }
+.nav-links { display:flex; gap:32px; align-items:center; }
+.nav-links a { color:var(--muted); text-decoration:none; font-size:14px; font-weight:500; transition:color .3s; }
+.nav-links a:hover { color:var(--accent); }
+.nav-cta {
+  background:var(--accent); color:var(--bg); padding:8px 20px; border-radius:8px;
+  font-weight:600; font-size:13px; text-decoration:none; transition:all .3s;
+}
+.nav-cta:hover { background:var(--accent2); transform:translateY(-1px); }
+
+/* HERO */
+.hero {
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  padding:120px 40px 80px; position:relative; overflow:hidden;
+}
+.hero::before {
+  content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:800px; height:800px; border-radius:50%;
+  background:radial-gradient(circle, rgba(78,205,196,0.06) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero-content { max-width:700px; text-align:center; position:relative; z-index:2; }
+.hero-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--accent-soft); border:1px solid rgba(78,205,196,0.15);
+  padding:6px 16px; border-radius:20px; font-size:13px; color:var(--accent);
+  margin-bottom:28px; font-weight:500;
+  animation:fadeInDown .8s ease;
+}
+.hero h1 {
+  font-size:clamp(48px,7vw,80px); font-weight:900; line-height:1.05;
+  letter-spacing:-2px; margin-bottom:20px;
+  background:linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  animation:fadeInUp .8s ease .1s both;
+}
+.hero p {
+  font-size:18px; color:var(--muted); line-height:1.6; max-width:500px; margin:0 auto 36px;
+  animation:fadeInUp .8s ease .2s both;
+}
+.hero-buttons { display:flex; gap:14px; justify-content:center; animation:fadeInUp .8s ease .3s both; }
+.btn-primary {
+  background:var(--accent); color:var(--bg); padding:14px 32px; border-radius:12px;
+  font-weight:700; font-size:15px; text-decoration:none; display:inline-flex;
+  align-items:center; gap:8px; transition:all .3s; border:none; cursor:pointer;
+}
+.btn-primary:hover { background:var(--accent2); transform:translateY(-2px); box-shadow:0 8px 30px rgba(78,205,196,0.25); }
+.btn-secondary {
+  background:var(--card); color:var(--text); padding:14px 32px; border-radius:12px;
+  font-weight:600; font-size:15px; text-decoration:none; display:inline-flex;
+  align-items:center; gap:8px; border:1px solid var(--border); transition:all .3s; cursor:pointer;
+}
+.btn-secondary:hover { border-color:var(--accent); color:var(--accent); }
+
+.hero-penguin {
+  font-size:120px; margin-top:50px;
+  animation:float 3s ease-in-out infinite, fadeInUp .8s ease .4s both;
+}
+
+/* FEATURES */
+.section { padding:100px 40px; max-width:1200px; margin:0 auto; }
+.section-label {
+  font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600;
+  color:var(--accent); letter-spacing:2px; text-transform:uppercase; margin-bottom:12px;
+}
+.section-title { font-size:clamp(32px,4vw,48px); font-weight:800; letter-spacing:-1px; margin-bottom:16px; }
+.section-desc { color:var(--muted); font-size:16px; max-width:560px; line-height:1.6; margin-bottom:50px; }
+
+.features-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:16px;
+}
+.feature-card {
+  background:var(--card); border:1px solid var(--border); border-radius:16px;
+  padding:28px; transition:all .4s; position:relative; overflow:hidden;
+}
+.feature-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity:0; transition:opacity .4s;
+}
+.feature-card:hover { border-color:rgba(78,205,196,0.3); transform:translateY(-4px); }
+.feature-card:hover::before { opacity:1; }
+.feature-icon { font-size:32px; margin-bottom:14px; display:block; }
+.feature-card h3 { font-size:16px; font-weight:700; margin-bottom:8px; }
+.feature-card p { font-size:13px; color:var(--muted); line-height:1.5; }
+
+/* EVOLUTION */
+.evo-section { text-align:center; }
+.evo-stages {
+  display:flex; justify-content:center; align-items:end; gap:clamp(20px,4vw,50px);
+  margin-top:50px; flex-wrap:wrap;
+}
+.evo-stage { text-align:center; }
+.evo-emoji {
+  font-size:clamp(40px,6vw,64px); display:block; margin-bottom:8px;
+  transition:transform .3s;
+}
+.evo-stage:hover .evo-emoji { transform:scale(1.2) rotate(-5deg); }
+.evo-label { font-size:13px; font-weight:600; color:var(--text); }
+.evo-xp { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--dim); margin-top:2px; }
+.evo-arrow { font-size:24px; color:var(--dim); margin-bottom:30px; }
+
+/* STATS */
+.stats-row {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin:60px 0;
+}
+.stat-card {
+  background:var(--card); border:1px solid var(--border); border-radius:14px;
+  padding:24px; text-align:center;
+}
+.stat-num {
+  font-family:'JetBrains Mono',monospace; font-size:36px; font-weight:800;
+  background:linear-gradient(135deg, var(--accent), var(--purple));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.stat-label { font-size:12px; color:var(--muted); margin-top:4px; }
+
+/* PRICING */
+.pricing-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; max-width:900px; margin:0 auto; }
+.price-card {
+  background:var(--card); border:1px solid var(--border); border-radius:16px;
+  padding:32px; position:relative; transition:all .3s;
+}
+.price-card.featured {
+  border-color:var(--accent); background:linear-gradient(135deg, var(--card), rgba(78,205,196,0.05));
+}
+.price-card.featured::before {
+  content:'POPULAR'; position:absolute; top:-12px; left:50%; transform:translateX(-50%);
+  background:var(--accent); color:var(--bg); padding:4px 16px; border-radius:20px;
+  font-size:11px; font-weight:700; letter-spacing:0.5px;
+}
+.price-name { font-size:18px; font-weight:700; margin-bottom:4px; }
+.price-amount {
+  font-family:'JetBrains Mono',monospace; font-size:36px; font-weight:800; color:var(--accent);
+}
+.price-period { font-size:13px; color:var(--dim); margin-bottom:20px; }
+.price-features { list-style:none; margin-bottom:24px; }
+.price-features li { font-size:13px; color:var(--muted); padding:6px 0; display:flex; align-items:center; gap:8px; }
+.price-features li::before { content:'✓'; color:var(--accent); font-weight:700; }
+
+/* CTA */
+.cta-section {
+  text-align:center; padding:80px 40px;
+  background:linear-gradient(180deg, transparent, rgba(78,205,196,0.03), transparent);
+}
+.cta-section h2 { font-size:clamp(28px,4vw,42px); font-weight:800; margin-bottom:16px; }
+.cta-section p { color:var(--muted); margin-bottom:32px; font-size:16px; }
+
+/* FOOTER */
+footer {
+  border-top:1px solid var(--border); padding:40px; text-align:center;
+}
+footer p { color:var(--dim); font-size:13px; }
+footer a { color:var(--accent); text-decoration:none; }
+
+/* ANIMATIONS */
+@keyframes fadeInUp {
+  from { opacity:0; transform:translateY(20px); }
+  to { opacity:1; transform:translateY(0); }
+}
+@keyframes fadeInDown {
+  from { opacity:0; transform:translateY(-10px); }
+  to { opacity:1; transform:translateY(0); }
+}
+@keyframes float {
+  0%,100% { transform:translateY(0); }
+  50% { transform:translateY(-12px); }
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity:0; transform:translateY(30px);
+  transition:opacity .8s ease, transform .8s ease;
+}
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+/* RESPONSIVE */
+@media(max-width:768px) {
+  nav { padding:0 20px; }
+  .nav-links { display:none; }
+  .section { padding:60px 20px; }
+  .hero { padding:100px 20px 60px; }
+  .hero-buttons { flex-direction:column; align-items:center; }
+  .stats-row { grid-template-columns:repeat(2,1fr); }
+  .evo-arrow { display:none; }
+}
+</style>
 </head>
 <body>
-    <h1>Welcome to Penguins Legal</h1>
-    <nav>
-        <ul>
-            <li><a href="privacy_policy.html">Privacy Policy</a></li>
-            <li><a href="terms_of_service.html">Terms of Service</a></li>
-        </ul>
-    </nav>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <span>🐧 Penguins</span>
+  </a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#evolution">Evolution</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#download" class="nav-cta">Download</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">🚀 Now on Google Play Store</div>
+    <h1>Stay Cool.<br>Stay Consistent.</h1>
+    <p>Build unshakable discipline with your penguin companion. Track habits, crush workouts, manage money, and defeat bad habits — all in one app.</p>
+    <div class="hero-buttons">
+      <a href="#download" class="btn-primary">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 0 1 0 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.802 8.99l-2.303 2.303-8.635-8.635z"/></svg>
+        Google Play
+      </a>
+      <a href="#features" class="btn-secondary">Learn More ↓</a>
+    </div>
+    <div class="hero-penguin">🐧</div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="section">
+  <div class="stats-row reveal">
+    <div class="stat-card">
+      <div class="stat-num">5+</div>
+      <div class="stat-label">Core Modules</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">50+</div>
+      <div class="stat-label">Trackable Habits</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">5</div>
+      <div class="stat-label">Evolution Stages</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">Discipline</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="section-label reveal">Features</div>
+  <h2 class="section-title reveal">Everything you need to<br>level up your life</h2>
+  <p class="section-desc reveal">One app to track habits, workouts, budget, and bad habits. Gamified with XP, streaks, and penguin evolution.</p>
+
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <span class="feature-icon">🎯</span>
+      <h3>Habit Tracking</h3>
+      <p>Create daily habits with categories. Track streaks, earn XP, and never break the chain. Cold shower timer included.</p>
+    </div>
+    <div class="feature-card reveal">
+      <span class="feature-icon">💪</span>
+      <h3>Gym & Fitness</h3>
+      <p>Log workouts with exercises, sets, reps, and weights. Track water intake and weight progress over time.</p>
+    </div>
+    <div class="feature-card reveal">
+      <span class="feature-icon">💰</span>
+      <h3>Budget Manager</h3>
+      <p>Track income and expenses. Set monthly limits per category. Recurring templates and savings insights.</p>
+    </div>
+    <div class="feature-card reveal">
+      <span class="feature-icon">🛡️</span>
+      <h3>Shield Mode</h3>
+      <p>Fight bad habits with 5-minute urge timers, journal reflections, and trigger tracking. Every urge survived = +50 XP.</p>
+    </div>
+    <div class="feature-card reveal">
+      <span class="feature-icon">📊</span>
+      <h3>Analytics</h3>
+      <p>Weekly charts, monthly summaries, and combined insights across all modules. See your growth in real data.</p>
+    </div>
+    <div class="feature-card reveal">
+      <span class="feature-icon">🏆</span>
+      <h3>Leaderboard</h3>
+      <p>Compete with the community. Weekly XP rankings with podium for top 3. Rise through the ranks.</p>
+    </div>
+  </div>
+</section>
+
+<!-- EVOLUTION -->
+<section class="section evo-section" id="evolution">
+  <div class="section-label reveal">Progression</div>
+  <h2 class="section-title reveal">Watch your penguin evolve</h2>
+  <p class="section-desc reveal" style="margin:0 auto 0">Earn XP through daily discipline. Your penguin grows as you grow.</p>
+
+  <div class="evo-stages reveal">
+    <div class="evo-stage">
+      <span class="evo-emoji">🥚</span>
+      <div class="evo-label">Egg</div>
+      <div class="evo-xp">0 XP</div>
+    </div>
+    <span class="evo-arrow">→</span>
+    <div class="evo-stage">
+      <span class="evo-emoji">🐤</span>
+      <div class="evo-label">Hatchling</div>
+      <div class="evo-xp">500 XP</div>
+    </div>
+    <span class="evo-arrow">→</span>
+    <div class="evo-stage">
+      <span class="evo-emoji">🐣</span>
+      <div class="evo-label">Chick</div>
+      <div class="evo-xp">2,000 XP</div>
+    </div>
+    <span class="evo-arrow">→</span>
+    <div class="evo-stage">
+      <span class="evo-emoji">🫅</span>
+      <div class="evo-label">Adult</div>
+      <div class="evo-xp">7,500 XP</div>
+    </div>
+    <span class="evo-arrow">→</span>
+    <div class="evo-stage">
+      <span class="evo-emoji">🐧</span>
+      <div class="evo-label">Emperor</div>
+      <div class="evo-xp">20,000 XP</div>
+    </div>
+  </div>
+</section>
+
+<!-- XP TABLE -->
+<section class="section">
+  <div class="features-grid">
+    <div class="feature-card reveal" style="border-left:3px solid var(--accent);">
+      <span class="feature-icon">✅</span>
+      <h3>+10 XP</h3>
+      <p>Complete a daily habit</p>
+    </div>
+    <div class="feature-card reveal" style="border-left:3px solid var(--purple);">
+      <span class="feature-icon">💪</span>
+      <h3>+40 XP</h3>
+      <p>Log a workout session</p>
+    </div>
+    <div class="feature-card reveal" style="border-left:3px solid var(--success);">
+      <span class="feature-icon">🛡️</span>
+      <h3>+50 XP</h3>
+      <p>Survive an urge (5 min timer)</p>
+    </div>
+    <div class="feature-card reveal" style="border-left:3px solid var(--warning);">
+      <span class="feature-icon">📝</span>
+      <h3>+20 XP</h3>
+      <p>Write a journal entry</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing">
+  <div style="text-align:center;">
+    <div class="section-label reveal">Pricing</div>
+    <h2 class="section-title reveal">Simple, honest pricing</h2>
+    <p class="section-desc reveal" style="margin:0 auto 50px;">Start free. Upgrade when you're ready.</p>
+  </div>
+
+  <div class="pricing-grid reveal">
+    <div class="price-card">
+      <div class="price-name">Free</div>
+      <div class="price-amount">₹0</div>
+      <div class="price-period">forever</div>
+      <ul class="price-features">
+        <li>Up to 5 habits</li>
+        <li>Basic streak tracking</li>
+        <li>Water tracker</li>
+        <li>Budget logging (50/month)</li>
+        <li>Community leaderboard</li>
+      </ul>
+      <a href="#download" class="btn-secondary" style="width:100%;justify-content:center;">Get Started</a>
+    </div>
+    <div class="price-card featured">
+      <div class="price-name">Pro Monthly</div>
+      <div class="price-amount">₹99</div>
+      <div class="price-period">per month</div>
+      <ul class="price-features">
+        <li>Unlimited habits</li>
+        <li>Advanced analytics</li>
+        <li>All evolution themes</li>
+        <li>Unlimited budget tracking</li>
+        <li>Export data (CSV)</li>
+        <li>Priority support</li>
+        <li>Ad-free experience</li>
+      </ul>
+      <a href="#download" class="btn-primary" style="width:100%;justify-content:center;">Upgrade to Pro</a>
+    </div>
+    <div class="price-card">
+      <div class="price-name">Pro Yearly</div>
+      <div class="price-amount">₹799</div>
+      <div class="price-period">per year · save 33%</div>
+      <ul class="price-features">
+        <li>Everything in Pro</li>
+        <li>Best value</li>
+        <li>Custom penguin names</li>
+        <li>Early access to features</li>
+        <li>Yearly streak badges</li>
+      </ul>
+      <a href="#download" class="btn-secondary" style="width:100%;justify-content:center;">Go Yearly</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="download">
+  <div class="reveal">
+    <div style="font-size:64px;margin-bottom:20px;">🐧</div>
+    <h2>Ready to become an Emperor?</h2>
+    <p>Download Penguins and start your discipline journey today.</p>
+    <a href="#" class="btn-primary" style="font-size:17px;padding:16px 40px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 0 1 0 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.802 8.99l-2.303 2.303-8.635-8.635z"/></svg>
+      Download on Google Play
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p style="margin-bottom:8px;">
+    <a href="privacy_policy.html">Privacy Policy</a> · 
+    <a href="terms_of_service.html">Terms of Service</a> · 
+    <a href="mailto:penguinsapp.help@gmail.com">Contact</a>
+  </p>
+  <p>© 2026 Penguins. Stay Cool. Stay Consistent. 🐧</p>
+</footer>
+
+<script>
+// Scroll reveal
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+reveals.forEach(el => observer.observe(el));
+
+// Smooth scroll for nav links
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior:'smooth' });
+  });
+});
+</script>
 </body>
 </html>
